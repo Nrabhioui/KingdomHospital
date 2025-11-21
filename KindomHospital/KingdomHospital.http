@@ -1,6 +1,397 @@
-@KingdomHospital_HostAddress = http://localhost:5039
+﻿@KingdomHospital_HostAddress = http://localhost:5039
 
-GET {{KingdomHospital_HostAddress}}/weatherforecast/
+####################################################################################################
+# L. SCÉNARIOS DE TEST – CRÉATIONS “HAPPY PATH”
+# Les données de base (4 spécialités, 6 médecins, 5 patients, médicaments) sont seedées au démarrage.
+# Ici on vérifie qu’elles sont bien présentes et on crée au moins 1 ordonnance complète (avec lignes).
+####################################################################################################
+
+### L.1 – Vérifier les 4 spécialités Cardio / Dermato / Neuro / Ophta (créées via SeedData, Annexe 1)
+# Projet L : "Créer 4 spécialités (Cardio, Dermato, Neuro, Ophta)" – on vérifie qu’elles existent.
+GET {{KingdomHospital_HostAddress}}/api/specialties
 Accept: application/json
 
 ###
+
+### L.2 – Vérifier qu’on a au moins 3 médecins rattachés à ces spécialités
+# Projet L : "Créer 3 médecins rattachés à ces spécialités" – done dans SeedData, on contrôle la présence.
+GET {{KingdomHospital_HostAddress}}/api/doctors
+Accept: application/json
+
+###
+
+### L.3 – Vérifier les 5 patients de démo (dates de naissance plausibles)
+# Projet L : "Créer 5 patients valides avec BirthDate plausible" – SeedData, on contrôle.
+GET {{KingdomHospital_HostAddress}}/api/patients
+Accept: application/json
+
+###
+
+### L.4 – Vérifier qu’il y a bien 10 consultations réparties entre les patients
+# Projet L : "Créer 1 consultation par patient (0 à 3 / patient, 1 patient sans consultation)" – SeedData.
+GET {{KingdomHospital_HostAddress}}/api/consultations
+Accept: application/json
+
+###
+
+### L.5 – Vérifier le catalogue de médicaments (>= 5–10 entrées)
+# Projet L : "Créer 1 catalogue de 5–10 médicaments" – Annexe 2 lue par SeedData.
+GET {{KingdomHospital_HostAddress}}/api/medicaments
+Accept: application/json
+
+###
+
+### L.6 – CRÉATION HAPPY PATH : Ordonnance liée à une consultation + 2 lignes
+# Projet L : "Émettre 1 ordonnance liée à une consultation, avec 1–3 lignes conformes".
+# AVANT : on regarde les ordonnances existantes (SeedData a déjà créé 5 ordonnances).
+GET {{KingdomHospital_HostAddress}}/api/ordonnances
+Accept: application/json
+
+###
+
+# L.6.1 – Créer une ordonnance pour la consultation 1 (doctorId=1, patientId=1)
+POST {{KingdomHospital_HostAddress}}/api/ordonnances
+Content-Type: application/json
+
+{
+  "doctorId": 1,
+  "patientId": 1,
+  "consultationId": 1,
+  "date": "2025-01-21",
+  "notes": "Ordonnance de test – happy path (liée à la consultation 1)"
+}
+
+###
+
+# L.6.2 – Vérifier que la nouvelle ordonnance est présente
+GET {{KingdomHospital_HostAddress}}/api/ordonnances
+Accept: application/json
+
+###
+
+# On suppose que la nouvelle ordonnance a l’id 6 (après les 5 du seed).
+# L.6.3 – Ajouter 2 lignes d’ordonnance conformes (Paracetamol + Ibuprofene)
+POST {{KingdomHospital_HostAddress}}/api/ordonnances/6/lignes
+Content-Type: application/json
+
+{
+  "medicamentId": 1,
+  "dosage": "500mg",
+  "frequency": "3x/jour",
+  "duration": "5 jours",
+  "quantity": 15,
+  "instructions": "Après les repas"
+}
+
+###
+
+POST {{KingdomHospital_HostAddress}}/api/ordonnances/6/lignes
+Content-Type: application/json
+
+{
+  "medicamentId": 2,
+  "dosage": "400mg",
+  "frequency": "2x/jour",
+  "duration": "3 jours",
+  "quantity": 6,
+  "instructions": "Avec un grand verre d'eau"
+}
+
+###
+
+# L.6.4 – Vérifier les lignes de l’ordonnance 6
+GET {{KingdomHospital_HostAddress}}/api/ordonnances/6/lignes
+Accept: application/json
+
+
+####################################################################################################
+# L. SCÉNARIOS DE TEST – ERREURS ATTENDUES
+####################################################################################################
+
+### E.1 – Médecin avec SpecialtyId inexistant → REJETÉ
+# Endpoint : POST /api/doctors
+# Règle : SpecialtyId doit exister (FK valide). On envoie 999 (qui n’existe pas).
+POST {{KingdomHospital_HostAddress}}/api/doctors
+Content-Type: application/json
+
+{
+  "lastName": "Erreur",
+  "firstName": "SpecialtyInvalide",
+  "specialtyId": 999
+}
+
+###
+
+### E.2 – Double booking même médecin / même date / même heure → REJETÉ
+# Dans les données de démo, la consultation 1 est :
+# doctorId = 1, patientId = 1, date = 2025-01-15, hour = 09:00:00
+# On tente de recréer une consultation identique → l’algorithme de double-booking doit refuser.
+POST {{KingdomHospital_HostAddress}}/api/consultations
+Content-Type: application/json
+
+{
+  "doctorId": 1,
+  "patientId": 2,
+  "date": "2025-01-15",
+  "hour": "09:00:00",
+  "reason": "Collision volontaire (double booking docteur 1)"
+}
+
+###
+
+### E.3 – Ligne d’ordonnance avec Quantity <= 0 → REJETÉE
+# Endpoint relationnel : POST /api/ordonnances/{id}/lignes
+# Règle : Quantity > 0 (OrdonnanceLigneService.ValidateBusiness).
+POST {{KingdomHospital_HostAddress}}/api/ordonnances/1/lignes
+Content-Type: application/json
+
+{
+  "medicamentId": 1,
+  "dosage": "500mg",
+  "frequency": "3x/jour",
+  "duration": "5 jours",
+  "quantity": 0,
+  "instructions": "Test Quantity = 0 (doit échouer)"
+}
+
+###
+
+### E.4 – Création de consultation avec FK cassée (doctorId inexistant) → REJETÉE
+POST {{KingdomHospital_HostAddress}}/api/consultations
+Content-Type: application/json
+
+{
+  "doctorId": 999,
+  "patientId": 1,
+  "date": "2025-02-01",
+  "hour": "10:00:00",
+  "reason": "FK docteur cassée"
+}
+
+###
+
+### E.5 – Création d’ordonnance avec FK cassée (patient inexistant) → REJETÉE
+POST {{KingdomHospital_HostAddress}}/api/ordonnances
+Content-Type: application/json
+
+{
+  "doctorId": 1,
+  "patientId": 999,
+  "consultationId": null,
+  "date": "2025-02-01",
+  "notes": "FK patient cassée"
+}
+
+###
+
+### E.6 – Incohérence Ordonnance vs Consultation (patient différent) → REJETÉE
+# On reprend la consultation 1 (doctorId=1, patientId=1) mais on envoie patientId=2.
+POST {{KingdomHospital_HostAddress}}/api/ordonnances
+Content-Type: application/json
+
+{
+  "doctorId": 1,
+  "patientId": 2,
+  "consultationId": 1,
+  "date": "2025-01-15",
+  "notes": "Ordonnance incohérente (patient différent de la consultation 1)"
+}
+
+###
+
+### (Non applicable dans ton projet actuel)
+# Spécialité en double & Médicament strictement dupliqué ne sont pas testés ici
+# car tu n’as pas implémenté de POST sur /api/specialties ni sur /api/medicaments.
+# Tu peux expliquer ça à l’oral.
+
+
+####################################################################################################
+# L. SCÉNARIOS DE TEST – SUPPRESSION / INTÉGRITÉ
+####################################################################################################
+
+### S.1 – Suppression d’un patient ayant un historique → INTERDITE
+# AVANT : on vérifie que le patient 1 a des consultations / ordonnances.
+GET {{KingdomHospital_HostAddress}}/api/patients/1/consultations
+Accept: application/json
+
+###
+
+GET {{KingdomHospital_HostAddress}}/api/patients/1/ordonnances
+Accept: application/json
+
+###
+
+# TENTATIVE : suppression du patient 1 → doit être rejetée (InvalidOperationException → 409)
+DELETE {{KingdomHospital_HostAddress}}/api/patients/1
+Accept: application/json
+
+###
+
+### S.2 – Suppression d’un médecin ayant un historique → INTERDITE
+# AVANT : on vérifie que le docteur 1 a des consultations / ordonnances.
+GET {{KingdomHospital_HostAddress}}/api/doctors/1/consultations
+Accept: application/json
+
+###
+
+GET {{KingdomHospital_HostAddress}}/api/doctors/1/ordonnances
+Accept: application/json
+
+###
+
+# TENTATIVE : suppression du docteur 1 → doit être rejetée
+DELETE {{KingdomHospital_HostAddress}}/api/doctors/1
+Accept: application/json
+
+###
+
+### S.3 – Suppression d’une ordonnance → supprime uniquement ses lignes
+# AVANT : on regarde l’ordonnance 1 et ses lignes.
+GET {{KingdomHospital_HostAddress}}/api/ordonnances/1
+Accept: application/json
+
+###
+
+GET {{KingdomHospital_HostAddress}}/api/ordonnances/1/lignes
+Accept: application/json
+
+###
+
+# SUPPRESSION de l’ordonnance 1
+DELETE {{KingdomHospital_HostAddress}}/api/ordonnances/1
+Accept: application/json
+
+###
+
+# APRÈS : l’ordonnance 1 doit être introuvable
+GET {{KingdomHospital_HostAddress}}/api/ordonnances/1
+Accept: application/json
+
+###
+
+# APRÈS : les lignes de l’ordonnance 1 doivent avoir disparu (liste vide)
+GET {{KingdomHospital_HostAddress}}/api/ordonnances/1/lignes
+Accept: application/json
+
+
+####################################################################################################
+# ENDPOINTS RELATIONNELS OBLIGATOIRES – MODIFICATIONS (POST / PUT / DELETE)
+# La moitié des opérations de modification ci-dessous sont des endpoints relationnels.
+####################################################################################################
+
+### R.1 – Spécialité d’un docteur (GET)
+GET {{KingdomHospital_HostAddress}}/api/doctors/1/specialty
+Accept: application/json
+
+###
+
+### R.2 – Modifier la spécialité du docteur 1 (relation DOCTOR ↔ SPECIALTY)
+# Exemple : passage en Cardiologie (Id spécialité = 10)
+PUT {{KingdomHospital_HostAddress}}/api/doctors/1/specialty/10
+Accept: application/json
+Content-Length: 0
+
+###
+
+# Vérifier que la spécialité a bien changé
+GET {{KingdomHospital_HostAddress}}/api/doctors/1/specialty
+Accept: application/json
+
+###
+
+### R.3 – Ordonnances liées à la consultation 2 (GET relation Consultation ↔ Ordonnances)
+GET {{KingdomHospital_HostAddress}}/api/consultations/2/ordonnances
+Accept: application/json
+
+###
+
+### R.4 – Créer une ordonnance rattachée à la consultation 2 (relationnelle POST)
+POST {{KingdomHospital_HostAddress}}/api/consultations/2/ordonnances
+Content-Type: application/json
+
+{
+  "date": "2025-01-15",
+  "notes": "Ordonnance créée via endpoint relationnel /consultations/{id}/ordonnances"
+}
+
+###
+
+### R.5 – Lier une ordonnance existante (3) à la consultation 1
+PUT {{KingdomHospital_HostAddress}}/api/ordonnances/3/consultation/1
+Accept: application/json
+Content-Length: 0
+
+###
+
+### R.6 – Détacher l’ordonnance 3 de sa consultation
+DELETE {{KingdomHospital_HostAddress}}/api/ordonnances/3/consultation
+Accept: application/json
+
+###
+
+### R.7 – Lignes d’une ordonnance (GET / POST / PUT / DELETE)
+# GET lignes de l’ordonnance 2
+GET {{KingdomHospital_HostAddress}}/api/ordonnances/2/lignes
+Accept: application/json
+
+###
+
+# POST – ajouter une ligne sur l’ordonnance 2
+POST {{KingdomHospital_HostAddress}}/api/ordonnances/2/lignes
+Content-Type: application/json
+
+{
+  "medicamentId": 5,
+  "dosage": "20mg",
+  "frequency": "1x/jour",
+  "duration": "10 jours",
+  "quantity": 10,
+  "instructions": "Ajout via scénario relationnel"
+}
+
+###
+
+# Supposons que la nouvelle ligne a l’id 7 – on la met à jour
+PUT {{KingdomHospital_HostAddress}}/api/ordonnances/2/lignes/7
+Content-Type: application/json
+
+{
+  "dosage": "20mg",
+  "frequency": "1x/jour",
+  "duration": "7 jours",
+  "quantity": 7,
+  "instructions": "Durée ajustée à 7 jours"
+}
+
+###
+
+# Puis on la supprime
+DELETE {{KingdomHospital_HostAddress}}/api/ordonnances/2/lignes/7
+Accept: application/json
+
+
+####################################################################################################
+# ENDPOINTS UTILITAIRES – LISTES FILTRÉES CONSULTATIONS / ORDONNANCES
+####################################################################################################
+
+### U.1 – Consultations filtrées : docteur 1 entre 2025-01-15 et 2025-01-20
+GET {{KingdomHospital_HostAddress}}/api/consultations?doctorId=1&from=2025-01-15&to=2025-01-20
+Accept: application/json
+
+###
+
+### U.2 – Consultations d’un patient (patientId = 1) sans filtre de dates
+GET {{KingdomHospital_HostAddress}}/api/consultations?patientId=1
+Accept: application/json
+
+###
+
+### U.3 – Ordonnances d’un médecin (doctorId = 3) entre deux dates
+GET {{KingdomHospital_HostAddress}}/api/ordonnances?doctorId=3&from=2025-01-15&to=2025-01-20
+Accept: application/json
+
+###
+
+### U.4 – Ordonnances d’un patient (patientId = 1), toutes dates
+GET {{KingdomHospital_HostAddress}}/api/ordonnances?patientId=1
+Accept: application/json

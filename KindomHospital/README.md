@@ -1,102 +1,315 @@
-# KindomHospital
-<img src="https://media.senscritique.com/media/000006507220/300/kingdom_hospital.jpg" width="10%">
-Ce dépôt contient l'application `KindomHospital` (.NET 9).
+1\. Description
+---------------
 
-## Objectif
+KindomHospital est une API REST ASP.NET Core (.NET 9) pour la gestion d’un cabinet / hôpital :spécialités, médecins, patients, consultations, médicaments, ordonnances et lignes d’ordonnance.Le projet suit la **Clean Architecture** : Presentation → Application → Domain → Infrastructure.
 
-Ce fichier décrit l'organisation des répertoires et des fichiers principaux du projet.
+2\. Structure du projet
+-----------------------
 
-## Architecture (réelle)
+Racine du projet : KindomHospital/
 
-Le projet suit une séparation en couches  minimale : `Presentation`, `Application`, `Infrastructure` et `Domain`.
+*   Presentation/
+    
+    *   Controllers/
+        
+        *   SpecialtiesController.cs
+            
+        *   DoctorsController.cs
+            
+        *   PatientsController.cs
+            
+        *   ConsultationsController.cs
+            
+        *   MedicamentsController.cs
+            
+        *   OrdonnancesController.cs
+            
+*   Application/
+    
+    *   DTOs/
+        
+        *   Specialties/ (SpecialtyDto, SpecialtyCreateDto, SpecialtyUpdateDto, …)
+            
+        *   Doctors/
+            
+        *   Patients/
+            
+        *   Consultations/
+            
+        *   Medicaments/
+            
+        *   Ordonnances/
+            
+        *   OrdonnanceLignes/
+            
+    *   Mappers/ (Mapperly)
+        
+        *   SpecialtyMapper, DoctorMapper, PatientMapper, ConsultationMapper,MedicamentMapper, OrdonnanceMapper, OrdonnanceLigneMapper
+            
+    *   Services/
+        
+        *   SpecialtyService, DoctorService, PatientService,ConsultationService, MedicamentService,OrdonnanceService, OrdonnanceLigneService
+            
+*   Domain/
+    
+    *   Entities/
+        
+        *   Specialty, Doctor, Patient, Consultation,Medicament, Ordonnance, OrdonnanceLigne (modélisation clinique)
+            
+*   Infrastructure/
+    
+    *   HospitalDbContext.cs
+        
+    *   Configurations/ (Fluent API EF Core)
+        
+    *   Migrations/ (migrations EF Core)
+        
+    *   Repositories/ (accès aux données, si utilisé)
+        
+    *   SeedData.cs (initialisation de données)
+        
+    *   Data/
+        
+        *   specialties.csv (Annexe 1 du sujet)
+            
+        *   medicaments.csv (Annexe 2 du sujet)
+            
+*   Fichiers racine
+    
+    *   Program.cs (configuration de l’API, DI, Serilog, DbContext, Seed)
+        
+    *   appsettings.json / appsettings.Development.json
+        
+    *   KindomHospital.http (jeu de tests HTTP)
+        
 
-```
-┌──────────────────────────────┐
-│          Presentation        │  → ASP.NET Core Controllers, Blazor, etc.
-└──────────────▲───────────────┘
-               │ (calls)
-┌──────────────┴───────────────┐
-│         Application          │  → Services métiers, Handlers CQRS, DTO, interfaces
-└──────────────▲───────────────┘
-               │ (depends on abstractions only)
-┌──────────────┴───────────────┐
-│           Domain             │  → Entités, ValueObjects, règles métier pures
-└──────────────▲───────────────┘
-               │ (implemented by)
-┌──────────────┴───────────────┐
-│        Infrastructure        │  → EF Core, Repositories, Files, Email, APIs externes
-└──────────────────────────────┘
-```
+3\. Prérequis
+-------------
 
+*   .NET 9 SDK
+    
+*   SQL Server LocalDB (ou instance équivalente)
+    
+*   Visual Studio 2025 / Rider
+    
+*   Connection string (dans appsettings.json) :
+    
 
-- `Presentation/`
-  - Contient l'interface d'exposition de l'application (API controllers, endpoints).
-  - Exemple : `Presentation/Controllers/WeatherForecastController.cs`.
-  - Rôle : recevoir les requêtes HTTP, valider les entrées, appeler les services de la couche `Application` et retourner les réponses.
+Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`   "ConnectionStrings": {    "HospitalDb": "Server=(localdb)\\MSSQLLocalDB;Database=KingdomHospitalDb;Trusted_Connection=True;TrustServerCertificate=True;"  }   `
 
-- `Application/`
-  - `Application/DTOs/` : objets de transfert (DTO) utilisés entre la présentation et les services.
-  - `Application/Mappers/` : définitions d'interfaces ou classes de mapping (ex. Mapperly) pour convertir entre entités du `Domain` et DTOs.
-  - `Application/Services/` : services d'application (use cases, orchestrations) qui contiennent la logique métier orientée cas d'utilisation et appellent le `Domain` pour les opérations métier.
-  - Rôle : centraliser la logique d'application (cas d'utilisation), garder la `Presentation` légère et découpler l'implémentation du `Domain`.
+4\. Configuration & démarrage
+-----------------------------
 
-- `Domain/`
-  - `Domain/Entities/` : entités et objets de valeur représentant le modèle de domaine (ex. `WeatherForecast` si pertinent).
-  - Rôle : contenir les entités et logique du domaine pur.
+1.  **Restaure les packages NuGet** (Visual Studio : Rebuild du projet).
+    
+2.  Vérifie la **chaîne de connexion** dans appsettings.json.
+    
+3.  Add-Migration InitialCreate -OutputDir Infrastructure/MigrationsUpdate-Database
+    
+    *   Default project = projet Web (KindomHospital)
+        
+    *   Commandes :
+        
+4.  dotnet run --project KindomHospital/KindomHospital.csprojL’API écoute sur les URLs configurées dans launchSettings.json(par ex. https://localhost:7006 et http://localhost:5039).
+    
+5.  Documentation OpenAPI :
+    
+    *   Document : /openapi/v1.json
+        
+    *   UI (Scalar/Swagger) si activée dans le projet.
+        
 
-- `Infrastructure/`
-  - `Infrastructure/Migrations/` : migrations de base de données liées au modèle de domaine (si vous utilisez EF Core ici).
-  - `Infrastructure/Configurations/` : configurations du modèle (ex. `IEntityTypeConfiguration<T>` pour EF Core) et règles de mapping/domaine.
-  - `Infrastructure/Repositories/` : implémentations concrètes des interfaces de dépôt (repositories) pour accéder aux données (ex. via EF Core). 
-  - Rôle : contenir les règles métier, invariants...
+5\. Seed des données
+--------------------
 
-## Intégration et responsabilités
+À chaque démarrage, Program.cs appelle :
 
-- `Presentation` dépend de `Application` (appel de services, utilisation de DTOs).
-- `Application` dépend de `Domain` (manipulation d'entités, règles métier).
-- Les mappers de `Application/Mappers` convertissent entre `Domain` et `Application/DTOs`.
-- Les configurations EF (dans `Domain/Configurations`) décrivent la persistance des entités si EF Core est utilisé.
+Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`   using (var scope = app.Services.CreateScope())  {      var context = scope.ServiceProvider.GetRequiredService();      SeedData.Initialize(context);  }   `
 
-## Où ajouter le code
+SeedData.Initialize :
 
-- En cas d'ajout d'un nouveau cas d'utilisation :
-  1. Créer les DTOs dans `Application/DTOs/`.
-  2. Ajouter le service d'application correspondant dans `Application/Services/`.
-  3. Ajouter l'entité (ou la mettre à jour) dans `Domain/Entities/`.
-  4. Ajouter les mappings dans `Application/Mappers/`.
-  5. Exposer l'endpoint dans `Presentation/Controllers/`.
+1.  **Specialties**
+    
+    *   Lit Data/specialties.csv (Annexe 1 du sujet).
+        
+    *   Ignore les doublons, tronque à 30 caractères, insère si la table est vide.
+        
+2.  **Medicaments**
+    
+    *   Lit Data/medicaments.csv (Annexe 2).
+        
+    *   Respecte Name <= 100, DosageForm/Strength <= 30, AtcCode <= 20.
+        
+3.  **Données de démo** (si tables vides)
+    
+    *   6 médecins répartis dans plusieurs spécialités.
+        
+    *   5 patients (dates de naissance plausibles).
+        
+    *   10 consultations (0–3 par patient, au moins un patient sans consultation,au moins une journée avec 2 consultations du même médecin à des heures différentes).
+        
+    *   5 ordonnances (dont une avec 3 médicaments et un patient avec ≥ 2 ordonnances).
+        
+    *   Lignes d’ordonnances cohérentes avec les contraintes de l’énoncé.
+        
 
-## Configuration rapide
+6\. Endpoints principaux (CRUD)
+-------------------------------
 
-- Enregistrer les services d'application et les mappers dans `Program.cs` via DI.
-- Si vous utilisez EF Core, vous pouvez ajouter le `DbContext` et les migrations et configurer la chaîne de connexion dans `Program.cs`.
+Résumé des endpoints implémentés, en phase avec la section 9 du sujet.
 
-## Commandes utiles
+### Specialties
 
-- `dotnet build` — compiler le(s) projet(s)
-- `dotnet run --project KindomHospital/KindomHospital.csproj` — lancer l'application
+*   GET /api/specialties – liste des spécialités
+    
+*   GET /api/specialties/{id} – détail d’une spécialité
+    
 
----
+### Doctors
 
-## Packages NuGet nécessaires
+*   GET /api/doctors
+    
+*   GET /api/doctors/{id}
+    
+*   POST /api/doctors
+    
+*   PUT /api/doctors/{id}
+    
+*   (Optionnel) DELETE /api/doctors/{id} avec règles métier.
+    
 
-Pour exploiter pleinement cette architecture, voici les principaux packages NuGet à installer?:
+### Patients
 
-- `Microsoft.AspNetCore.OpenApi` : support OpenAPI/Swagger pour la documentation d'API
-- `Microsoft.EntityFrameworkCore` : ORM Entity Framework Core (accès aux données)
-- `Microsoft.EntityFrameworkCore.SqlServer` : provider SQL Server pour EF Core
-- `Microsoft.EntityFrameworkCore.Design` : outils de design (migrations, scaffolding)
-- `Microsoft.EntityFrameworkCore.Tools` : outils CLI/support de migration
-- `Riok.Mapperly` : générateur de mappers (pour la couche Application)
+*   GET /api/patients
+    
+*   GET /api/patients/{id}
+    
+*   POST /api/patients
+    
+*   PUT /api/patients/{id}
+    
+*   DELETE /api/patients/{id}
+    
 
+### Consultations
 
----
+*   GET /api/consultations
+    
+*   GET /api/consultations/{id}
+    
+*   POST /api/consultations
+    
+*   PUT /api/consultations/{id}
+    
+*   DELETE /api/consultations/{id}
+    
 
-## N'oubliez pas de :
+### Medicaments
 
-- Ajouter votre connection string dans le fichier Appsettings
-- Pour la commande Add-Migration ajouter le paramètre : -OutputDir Infrastructure/Migrations
-- Configurer le pipeline HTTP avec votre contexte, Mapper, Repositories et Services
-- Supprimer les fichiers inutiles (WeatherForecast par exemple)
-- Adapter le README à votre projet)
-- Ajouter un fichier .gitignore si nécessaire
+*   GET /api/medicaments
+    
+*   GET /api/medicaments/{id}
+    
+
+### Ordonnances & Lignes
+
+*   GET /api/ordonnances
+    
+*   GET /api/ordonnances/{id}
+    
+*   POST /api/ordonnances
+    
+*   PUT /api/ordonnances/{id}
+    
+*   DELETE /api/ordonnances/{id}
+    
+*   GET /api/ordonnances/{id}/lignes
+    
+*   POST /api/ordonnances/{id}/lignes
+    
+*   GET /api/ordonnances/{id}/lignes/{ligneId}
+    
+*   PUT /api/ordonnances/{id}/lignes/{ligneId}
+    
+*   DELETE /api/ordonnances/{id}/lignes/{ligneId}
+    
+
+7\. Endpoints relationnels & utilitaires
+----------------------------------------
+
+### Relationnels
+
+*   **Doctor ↔ Specialty**
+    
+    *   GET /api/specialties/{id}/doctors
+        
+    *   GET /api/doctors/{id}/specialty
+        
+    *   PUT /api/doctors/{id}/specialty/{specialtyId}
+        
+*   **Doctor ↔ Consultations / Patients / Ordonnances**
+    
+    *   GET /api/doctors/{id}/consultations
+        
+    *   GET /api/doctors/{id}/patients
+        
+    *   GET /api/doctors/{id}/ordonnances
+        
+*   **Patient ↔ Consultations / Ordonnances**
+    
+    *   GET /api/patients/{id}/consultations
+        
+    *   GET /api/patients/{id}/ordonnances
+        
+*   **Consultations ↔ Ordonnances**
+    
+    *   GET /api/consultations/{id}/ordonnances
+        
+    *   POST /api/consultations/{id}/ordonnances
+        
+    *   PUT /api/ordonnances/{id}/consultation/{consultationId}
+        
+    *   DELETE /api/ordonnances/{id}/consultation
+        
+*   **Médicament ↔ Ordonnances**
+    
+    *   GET /api/medicaments/{id}/ordonnances
+        
+
+### Endpoints utilitaires
+
+Conformes à la section _Endpoints utilitaires_ du sujet.
+
+*   GET /api/consultations?doctorId=&patientId=&from=&to=
+    
+*   GET /api/ordonnances?doctorId=&patientId=&from=&to=
+    
+
+> Règle : doctorId et patientId peuvent être null, mais au moins un doit être renseigné.
+
+8\. Jeu de tests (.http)
+------------------------
+
+Le fichier **KindomHospital.http** contient des scénarios de test comme demandé :
+
+*   Lecture initiale (**GET avant**)
+    
+*   POST / PUT / DELETE sur les endpoints CRUD et relationnels
+    
+*   Lecture finale (**GET après**) pour visualiser l’impact
+    
+
+Ce fichier peut être exécuté dans Visual Studio (HTTP Client) ou importé en Postman via l’OpenAPI.
+
+9\. Technologies
+----------------
+
+*   ASP.NET Core Web API (.NET 9)
+    
+*   Entity Framework Core (Code First, SQL Server)
+    
+*   Mapperly (mapping entités ↔ DTO)
+    
+*   Serilog (logging console + fichier)
+    
+*   Clean Architecture (Presentation / Application / Domain / Infrastructure)

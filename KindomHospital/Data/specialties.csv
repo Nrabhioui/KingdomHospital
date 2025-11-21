@@ -1,0 +1,41 @@
+﻿Id,Nom,Categorie,Description 
+1,Chirurgie Générale,Chirurgicale,Interventions abdominales et digestives 
+2,Chirurgie Orthopédique,Chirurgicale,Os, articulations et ligaments 
+3,Chirurgie Cardiaque,Chirurgicale,Cœur et vaisseaux 
+4,Neurochirurgie,Chirurgicale,Cerveau, moelle épinière et nerfs 
+5,Chirurgie Plastique,Chirurgicale,Reconstructrice et esthétique 
+6,Chirurgie Thoracique,Chirurgicale,Poumons et cage thoracique 
+7,Chirurgie Vasculaire,Chirurgicale,Artères et veines 
+8,Chirurgie Pédiatrique,Chirurgicale,Interventions chez l'enfant 
+9,Médecine Générale,Médicale,Soins primaires 
+10,Cardiologie,Médicale,Maladies cardiovasculaires 
+11,Pneumologie,Médicale,Maladies respiratoires 
+12,Gastro-entérologie,Médicale,Système digestif 
+13,Néphrologie,Médicale,Reins et voies urinaires 
+14,Endocrinologie,Médicale,Hormones et métabolisme 
+15,Rhumatologie,Médicale,Articulations, os et muscles 
+16,Neurologie,Médicale,Système nerveux 
+17,Hématologie,Médicale,Sang et organes hématopoïétiques 
+18,Oncologie,Médicale,Cancers et tumeurs 
+19,Gynécologie,Femme et Enfant,Appareil génital féminin 
+20,Obstétrique,Femme et Enfant,Grossesse et accouchement 
+21,Pédiatrie,Femme et Enfant,Médecine de l'enfant 
+22,Néonatologie,Femme et Enfant,Nouveau-nés et prématurés 
+23,Ophtalmologie,Organes des Sens,Yeux et vision 
+24,ORL,Organes des Sens,Oreilles, nez et gorge 
+25,Dermatologie,Organes des Sens,Peau, cheveux et ongles 
+26,Anesthésiologie,Transversale,Anesthésie et réanimation 
+27,Radiologie,Transversale,Imagerie médicale 
+28,Médecine Interne,Transversale,Maladies complexes multi-organes 
+29,Psychiatrie,Transversale,Santé mentale 
+30,Gériatrie,Transversale,Médecine des personnes âgées 
+31,Médecine d'Urgence,Transversale,Urgences et SAMU 
+32,Médecine du Travail,Transversale,Santé au travail 
+33,Médecine Légale,Transversale,Expertise judiciaire 
+34,Allergologie,Médicale,Allergies et immunologie 
+35,Infectiologie,Médicale,Maladies infectieuses 
+36,Médecine Physique et Réadaptation,Transversale,Rééducation fonctionnelle 
+37,Médecine Nucléaire,Transversale,Diagnostic et thérapie par isotopes 
+38,Anatomo-pathologie,Transversale,Analyse tissulaire et diagnostic 
+39,Biologie Médicale,Transversale,Analyses de laboratoire 
+40,Addictologie,Transversale,Dépendances et toxicomanies
