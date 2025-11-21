@@ -47,8 +47,15 @@ Le projet suit une séparation en couches  minimale : `Presentation`, `Applicati
 - `Infrastructure/`
   - `Infrastructure/Migrations/` : migrations de base de données liées au modèle de domaine (si vous utilisez EF Core ici).
   - `Infrastructure/Configurations/` : configurations du modèle (ex. `IEntityTypeConfiguration<T>` pour EF Core) et règles de mapping/domaine.
+  - `Infrastructure/Repositories/` : implémentations concrètes des interfaces de dépôt (repositories) pour accéder aux données (ex. via EF Core). 
   - Rôle : contenir les règles métier, invariants...
 
+## Intégration et responsabilités
+
+- `Presentation` dépend de `Application` (appel de services, utilisation de DTOs).
+- `Application` dépend de `Domain` (manipulation d'entités, règles métier).
+- Les mappers de `Application/Mappers` convertissent entre `Domain` et `Application/DTOs`.
+- Les configurations EF (dans `Domain/Configurations`) décrivent la persistance des entités si EF Core est utilisé.
 
 ## Où ajouter le code
 
@@ -58,6 +65,16 @@ Le projet suit une séparation en couches  minimale : `Presentation`, `Applicati
   3. Ajouter l'entité (ou la mettre à jour) dans `Domain/Entities/`.
   4. Ajouter les mappings dans `Application/Mappers/`.
   5. Exposer l'endpoint dans `Presentation/Controllers/`.
+
+## Configuration rapide
+
+- Enregistrer les services d'application et les mappers dans `Program.cs` via DI.
+- Si vous utilisez EF Core, vous pouvez ajouter le `DbContext` et les migrations et configurer la chaîne de connexion dans `Program.cs`.
+
+## Commandes utiles
+
+- `dotnet build` — compiler le(s) projet(s)
+- `dotnet run --project KindomHospital/KindomHospital.csproj` — lancer l'application
 
 ---
 
