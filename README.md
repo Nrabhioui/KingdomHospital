@@ -598,21 +598,14 @@ Relation :
 
 # 🧩 Résumé des relations
 
-| Entité A        | Relation | Entité B           |
-
+| Entité A        | Relation | Entité B           |
 |-----------------|----------|--------------------|
-
-| Specialty       | 1 ─ ∞    | Doctor             |
-
-| Doctor          | 1 ─ ∞    | Consultation       |
-
-| Patient         | 1 ─ ∞    | Consultation       |
-
-| Consultation    | 1 ─ ∞    | Ordonnance         |
-
-| Ordonnance      | 1 ─ ∞    | OrdonnanceLigne    |
-
-| Medicament      | 1 ─ ∞    | OrdonnanceLigne    |
+| Specialty       | 1 ─ ∞    | Doctor             |
+| Doctor          | 1 ─ ∞    | Consultation       |
+| Patient         | 1 ─ ∞    | Consultation       |
+| Consultation    | 1 ─ ∞    | Ordonnance         |
+| Ordonnance      | 1 ─ ∞    | OrdonnanceLigne    |
+| Medicament      | 1 ─ ∞    | OrdonnanceLigne    |
 
 ---
 
