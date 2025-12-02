@@ -50,7 +50,7 @@ public class DoctorsController : ControllerBase
         }
         catch (InvalidOperationException ex)
         {
-            // Specialty inexistante ou doublon
+            // Specialty inexistante ou doublon , expliquer car pas dans le cours
             return Conflict(ex.Message);
         }
     }

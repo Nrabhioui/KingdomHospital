@@ -1,315 +1,404 @@
-1\. Description
----------------
+# 🏥 KingdomHospital – API .NET 9  
+API de gestion hospitalière basée sur **Clean Architecture**, **Entity Framework Core**, **Mapperly** et **SQL Server**.
 
-KindomHospital est une API REST ASP.NET Core (.NET 9) pour la gestion d’un cabinet / hôpital :spécialités, médecins, patients, consultations, médicaments, ordonnances et lignes d’ordonnance.Le projet suit la **Clean Architecture** : Presentation → Application → Domain → Infrastructure.
+Ce projet implémente la gestion complète des éléments suivants :
+- Spécialités médicales  
+- Médecins  
+- Patients  
+- Consultations  
+- Ordonnances  
+- Lignes d’ordonnance  
+- Catalogue de médicaments  
 
-2\. Structure du projet
------------------------
+Le tout à travers une API RESTful propre, testable, documentée et conforme au cahier des charges.
 
-Racine du projet : KindomHospital/
+---
 
-*   Presentation/
-    
-    *   Controllers/
+## 🚀 Technologies utilisées
+
+- **.NET 9 Web API**
+- **Entity Framework Core 9**
+- **SQL Server (LocalDB)**
+- **Mapperly** *(génération automatique de mappers compile-time)*
+- **Serilog** *(logging)*
+- **Clean Architecture** *(séparation stricte des responsabilités)*
+
+---
+
+## 🧱 Architecture du projet
+
+Le projet suit strictement la Clean Architecture :
+
+┌──────────────────────────────┐
+│ Presentation │ → Controllers API
+└──────────────▲───────────────┘
+│
+┌──────────────┴───────────────┐
+│ Application │ → Services, DTOs, Mapperly
+└──────────────▲───────────────┘
+│
+┌──────────────┴───────────────┐
+│ Domain │ → Entités métier (POCO)
+└──────────────▲───────────────┘
+│
+┌──────────────┴───────────────┐
+│ Infrastructure │ → EF Core, DB, Configurations, Seed
+└──────────────────────────────┘
+
+
+### ➜ **Presentation**
+Contient uniquement les **Controllers**.  
+Reçoit les requêtes HTTP, déclenche les services Application, retourne les DTOs.
+
+### ➜ **Application**
+Contient :
+- DTOs
+- Services (logique métier applicative)
+- Mappers (Mapperly)
+Aucune dépendance vers EF Core.
+
+### ➜ **Domain**
+Contient **uniquement les entités métier**.
+
+### ➜ **Infrastructure**
+Contient :
+- DbContext EF Core  
+- Configurations (IEntityTypeConfiguration)  
+- Migrations  
+- SeedData  
+- Repositories (implémentation des accès aux données)
+
+# 📁 Structure complète du projet
+
+Ce projet suit une organisation claire selon la Clean Architecture.  
+Voici l’arborescence complète :
+
+C:.
+|   appsettings.Development.json
+|   appsettings.json
+|   arborescence.txt
+|   KingdomHospital.csproj
+|   KingdomHospital.csproj.user
+|   KingdomHospital.http
+|   Program.cs
+|   README - Copy.md
+|   README.md
+|   
++---Application
+|   +---DTOs
+|   |   +---Consultations
+|   |   |       ConsultationCreateDto.cs
+|   |   |       ConsultationDto.cs
+|   |   |       ConsultationUpdateDto.cs
+|   |   |       
+|   |   +---Doctors
+|   |   |       DoctorCreateDto.cs
+|   |   |       DoctorDto.cs
+|   |   |       DoctorUpdateDto.cs
+|   |   |       
+|   |   +---Medicaments
+|   |   |       MedicamentCreateDto.cs
+|   |   |       MedicamentDto.cs
+|   |   |       MedicamentUpdateDto.cs
+|   |   |       
+|   |   +---OrdonnanceLignes
+|   |   |       OrdonnanceLigneCreateDto.cs
+|   |   |       OrdonnanceLigneDto.cs
+|   |   |       OrdonnanceLigneUpdateDto.cs
+|   |   |       
+|   |   +---Ordonnances
+|   |   |       OrdonnanceCreateDto.cs
+|   |   |       OrdonnanceDto.cs
+|   |   |       OrdonnanceUpdateDto.cs
+|   |   |       
+|   |   +---Patients
+|   |   |       PatientCreateDto.cs
+|   |   |       PatientDto.cs
+|   |   |       PatientUpdateDto.cs
+|   |   |       
+|   |   \---Specialties
+|   |           SpecialtyCreateDto.cs
+|   |           SpecialtyDto.cs
+|   |           SpecialtyUpdateDto.cs
+|   |           
+|   +---Mappers
+|   |       ConsultationMapper.cs
+|   |       DoctorMapper.cs
+|   |       MedicamentMapper.cs
+|   |       OrdonnanceLigneMapper.cs
+|   |       OrdonnanceMapper.cs
+|   |       PatientMapper.cs
+|   |       SpecialtyMapper.cs
+|   |       
+|   \---Services
+|           ConsultationService.cs
+|           DoctorService.cs
+|           MedicamentService.cs
+|           OrdonnanceLigneService.cs
+|           OrdonnanceService.cs
+|           PatientService.cs
+|           SpecialtyService.cs
+|           
+          
++---Data
+|       medicaments.csv
+|       specialties.csv
+|       
++---Domain
+|   \---Entities
+|           Consultation.cs
+|           Doctor.cs
+|           Medicament.cs
+|           Ordonnance.cs
+|           OrdonnanceLigne.cs
+|           Patient.cs
+|           Specialty.cs
+|           
++---Infrastructure
+|   |   HospitalDbContext.cs
+|   |   SeedData.cs
+|   |   
+|   +---Configurations
+|   |       .keep
+|   |       ConsultationConfiguration.cs
+|   |       DoctorConfiguration.cs
+|   |       MedicamentConfiguration.cs
+|   |       OrdonnanceConfiguration.cs
+|   |       OrdonnanceLigneConfiguration.cs
+|   |       PatientConfiguration.cs
+|   |       SpecialtyConfiguration.cs
+|   |       
+|   +---Migrations
+|   |       .keep
+|   |       20251119122428_InitialCreate.cs
+|   |       20251119122428_InitialCreate.Designer.cs
+|   |       HospitalDbContextModelSnapshot.cs
+|   |       
+|   \---Repositories
+|           .keep
+|           ConsultationRepository.cs
+|           DoctorRepository.cs
+|           MedicamentRepository.cs
+|           OrdonnanceLigneRepository.cs
+|           OrdonnanceRepository.cs
+|           PatientRepository.cs
+|           SpecialtyRepository.cs
+|           
++---Logs
+|       log-20251119.txt
+|       log-20251120.txt
+|       log-20251121.txt
+                
++---Presentation
+|   \---Controllers
+|           ConsultationsController.cs
+|           DoctorsController.cs
+|           MedicamentsController.cs
+|           OrdonnancesController.cs
+|           PatientsController.cs
+|           SpecialtiesController.cs
+|           
+\---Properties
+        launchSettings.json
         
-        *   SpecialtiesController.cs
-            
-        *   DoctorsController.cs
-            
-        *   PatientsController.cs
-            
-        *   ConsultationsController.cs
-            
-        *   MedicamentsController.cs
-            
-        *   OrdonnancesController.cs
-            
-*   Application/
     
-    *   DTOs/
-        
-        *   Specialties/ (SpecialtyDto, SpecialtyCreateDto, SpecialtyUpdateDto, …)
-            
-        *   Doctors/
-            
-        *   Patients/
-            
-        *   Consultations/
-            
-        *   Medicaments/
-            
-        *   Ordonnances/
-            
-        *   OrdonnanceLignes/
-            
-    *   Mappers/ (Mapperly)
-        
-        *   SpecialtyMapper, DoctorMapper, PatientMapper, ConsultationMapper,MedicamentMapper, OrdonnanceMapper, OrdonnanceLigneMapper
-            
-    *   Services/
-        
-        *   SpecialtyService, DoctorService, PatientService,ConsultationService, MedicamentService,OrdonnanceService, OrdonnanceLigneService
-            
-*   Domain/
-    
-    *   Entities/
-        
-        *   Specialty, Doctor, Patient, Consultation,Medicament, Ordonnance, OrdonnanceLigne (modélisation clinique)
-            
-*   Infrastructure/
-    
-    *   HospitalDbContext.cs
-        
-    *   Configurations/ (Fluent API EF Core)
-        
-    *   Migrations/ (migrations EF Core)
-        
-    *   Repositories/ (accès aux données, si utilisé)
-        
-    *   SeedData.cs (initialisation de données)
-        
-    *   Data/
-        
-        *   specialties.csv (Annexe 1 du sujet)
-            
-        *   medicaments.csv (Annexe 2 du sujet)
-            
-*   Fichiers racine
-    
-    *   Program.cs (configuration de l’API, DI, Serilog, DbContext, Seed)
-        
-    *   appsettings.json / appsettings.Development.json
-        
-    *   KindomHospital.http (jeu de tests HTTP)
-        
+---
 
-3\. Prérequis
--------------
+## 📌 Signification des dossiers
 
-*   .NET 9 SDK
-    
-*   SQL Server LocalDB (ou instance équivalente)
-    
-*   Visual Studio 2025 / Rider
-    
-*   Connection string (dans appsettings.json) :
-    
+### ✔ Application  
+Contient :
+- Les DTOs utilisés par l’API  
+- Les services (use cases / logique métier)  
+- Les mappers générés avec Mapperly  
 
-Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`   "ConnectionStrings": {    "HospitalDb": "Server=(localdb)\\MSSQLLocalDB;Database=KingdomHospitalDb;Trusted_Connection=True;TrustServerCertificate=True;"  }   `
+### ✔ Domain  
+Contient **uniquement les entités du domaine** (POCO), sans dépendance.
 
-4\. Configuration & démarrage
------------------------------
+### ✔ Infrastructure  
+Contient :
+- Le `DbContext` EF Core  
+- Les configurations (FK, PK, contraintes…)  
+- Les migrations  
+- Le seeding  
+- Les repositories  
 
-1.  **Restaure les packages NuGet** (Visual Studio : Rebuild du projet).
-    
-2.  Vérifie la **chaîne de connexion** dans appsettings.json.
-    
-3.  Add-Migration InitialCreate -OutputDir Infrastructure/MigrationsUpdate-Database
-    
-    *   Default project = projet Web (KindomHospital)
-        
-    *   Commandes :
-        
-4.  dotnet run --project KindomHospital/KindomHospital.csprojL’API écoute sur les URLs configurées dans launchSettings.json(par ex. https://localhost:7006 et http://localhost:5039).
-    
-5.  Documentation OpenAPI :
-    
-    *   Document : /openapi/v1.json
-        
-    *   UI (Scalar/Swagger) si activée dans le projet.
-        
+### ✔ Presentation  
+Contient **les contrôleurs API**, un par entité ou groupe d'entités.
 
-5\. Seed des données
---------------------
+### ✔ Data  
+Contient les fichiers CSV de seed initial (spécialités, médicaments).
 
-À chaque démarrage, Program.cs appelle :
+---
+# 🧬 Modèle de Domaine (UML)
 
-Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`   using (var scope = app.Services.CreateScope())  {      var context = scope.ServiceProvider.GetRequiredService();      SeedData.Initialize(context);  }   `
+Le diagramme suivant représente les entités du domaine et leurs relations.  
+Il correspond exactement au modèle utilisé dans le projet KingdomHospital.
 
-SeedData.Initialize :
+Specialty (1) ──── (∞) Doctor
+Doctor (1) ───── (∞) Consultation
+Patient (1) ───── (∞) Consultation
 
-1.  **Specialties**
-    
-    *   Lit Data/specialties.csv (Annexe 1 du sujet).
-        
-    *   Ignore les doublons, tronque à 30 caractères, insère si la table est vide.
-        
-2.  **Medicaments**
-    
-    *   Lit Data/medicaments.csv (Annexe 2).
-        
-    *   Respecte Name <= 100, DosageForm/Strength <= 30, AtcCode <= 20.
-        
-3.  **Données de démo** (si tables vides)
-    
-    *   6 médecins répartis dans plusieurs spécialités.
-        
-    *   5 patients (dates de naissance plausibles).
-        
-    *   10 consultations (0–3 par patient, au moins un patient sans consultation,au moins une journée avec 2 consultations du même médecin à des heures différentes).
-        
-    *   5 ordonnances (dont une avec 3 médicaments et un patient avec ≥ 2 ordonnances).
-        
-    *   Lignes d’ordonnances cohérentes avec les contraintes de l’énoncé.
-        
+Consultation (1) ──── (∞) Ordonnance
+Ordonnance (1) ──── (∞) OrdonnanceLigne
 
-6\. Endpoints principaux (CRUD)
--------------------------------
+Medicament (1) ──── (∞) OrdonnanceLigne
 
-Résumé des endpoints implémentés, en phase avec la section 9 du sujet.
 
-### Specialties
+---
 
-*   GET /api/specialties – liste des spécialités
-    
-*   GET /api/specialties/{id} – détail d’une spécialité
-    
+# 📘 Détails des Entités
 
-### Doctors
+## **Specialty**
 
-*   GET /api/doctors
-    
-*   GET /api/doctors/{id}
-    
-*   POST /api/doctors
-    
-*   PUT /api/doctors/{id}
-    
-*   (Optionnel) DELETE /api/doctors/{id} avec règles métier.
-    
 
-### Patients
+Id (PK)
+Name (unique, max 30)
 
-*   GET /api/patients
-    
-*   GET /api/patients/{id}
-    
-*   POST /api/patients
-    
-*   PUT /api/patients/{id}
-    
-*   DELETE /api/patients/{id}
-    
+Relation :
+- 1 spécialité → plusieurs médecins
 
-### Consultations
+---
 
-*   GET /api/consultations
-    
-*   GET /api/consultations/{id}
-    
-*   POST /api/consultations
-    
-*   PUT /api/consultations/{id}
-    
-*   DELETE /api/consultations/{id}
-    
+## **Doctor**
 
-### Medicaments
 
-*   GET /api/medicaments
-    
-*   GET /api/medicaments/{id}
-    
+Id (PK)
+LastName
+FirstName
+SpecialtyId (FK → Specialty)
 
-### Ordonnances & Lignes
+Contraintes métier :
+- SpecialtyId doit exister  
+- Pas de doublon exact (Nom + Prénom + Spécialité)
 
-*   GET /api/ordonnances
-    
-*   GET /api/ordonnances/{id}
-    
-*   POST /api/ordonnances
-    
-*   PUT /api/ordonnances/{id}
-    
-*   DELETE /api/ordonnances/{id}
-    
-*   GET /api/ordonnances/{id}/lignes
-    
-*   POST /api/ordonnances/{id}/lignes
-    
-*   GET /api/ordonnances/{id}/lignes/{ligneId}
-    
-*   PUT /api/ordonnances/{id}/lignes/{ligneId}
-    
-*   DELETE /api/ordonnances/{id}/lignes/{ligneId}
-    
+Relations :
+- 1 docteur → plusieurs consultations  
+- 1 docteur → plusieurs ordonnances  
 
-7\. Endpoints relationnels & utilitaires
-----------------------------------------
+---
 
-### Relationnels
+## **Patient**
 
-*   **Doctor ↔ Specialty**
-    
-    *   GET /api/specialties/{id}/doctors
-        
-    *   GET /api/doctors/{id}/specialty
-        
-    *   PUT /api/doctors/{id}/specialty/{specialtyId}
-        
-*   **Doctor ↔ Consultations / Patients / Ordonnances**
-    
-    *   GET /api/doctors/{id}/consultations
-        
-    *   GET /api/doctors/{id}/patients
-        
-    *   GET /api/doctors/{id}/ordonnances
-        
-*   **Patient ↔ Consultations / Ordonnances**
-    
-    *   GET /api/patients/{id}/consultations
-        
-    *   GET /api/patients/{id}/ordonnances
-        
-*   **Consultations ↔ Ordonnances**
-    
-    *   GET /api/consultations/{id}/ordonnances
-        
-    *   POST /api/consultations/{id}/ordonnances
-        
-    *   PUT /api/ordonnances/{id}/consultation/{consultationId}
-        
-    *   DELETE /api/ordonnances/{id}/consultation
-        
-*   **Médicament ↔ Ordonnances**
-    
-    *   GET /api/medicaments/{id}/ordonnances
-        
 
-### Endpoints utilitaires
+Id (PK)
+LastName
+FirstName
+BirthDate
 
-Conformes à la section _Endpoints utilitaires_ du sujet.
+Contraintes :
+- BirthDate réaliste (>= 1900, <= aujourd’hui)
+- Unicité logique : Nom + Prénom + BirthDate
 
-*   GET /api/consultations?doctorId=&patientId=&from=&to=
-    
-*   GET /api/ordonnances?doctorId=&patientId=&from=&to=
-    
+Relations :
+- 1 patient → plusieurs consultations  
+- 1 patient → plusieurs ordonnances  
+- Impossible de supprimer un patient ayant un historique
 
-> Règle : doctorId et patientId peuvent être null, mais au moins un doit être renseigné.
+---
 
-8\. Jeu de tests (.http)
-------------------------
+## **Consultation**
 
-Le fichier **KindomHospital.http** contient des scénarios de test comme demandé :
 
-*   Lecture initiale (**GET avant**)
-    
-*   POST / PUT / DELETE sur les endpoints CRUD et relationnels
-    
-*   Lecture finale (**GET après**) pour visualiser l’impact
-    
+Id (PK)
+DoctorId (FK)
+PatientId (FK)
+Date (DateOnly)
+Hour (TimeOnly)
+Reason
 
-Ce fichier peut être exécuté dans Visual Studio (HTTP Client) ou importé en Postman via l’OpenAPI.
+Contraintes importantes :
+- Un médecin **ne peut pas** avoir deux consultations à la même date + heure  
+- Un patient **ne peut pas** avoir deux consultations à la même date + heure  
+- DoctorId et PatientId doivent exister
 
-9\. Technologies
-----------------
+Relation :
+- 1 consultation → 0 ou plusieurs ordonnances
 
-*   ASP.NET Core Web API (.NET 9)
-    
-*   Entity Framework Core (Code First, SQL Server)
-    
-*   Mapperly (mapping entités ↔ DTO)
-    
-*   Serilog (logging console + fichier)
-    
-*   Clean Architecture (Presentation / Application / Domain / Infrastructure)
+---
+
+## **Ordonnance**
+
+
+Id (PK)
+DoctorId (FK)
+PatientId (FK)
+ConsultationId (FK nullable)
+Date
+Notes (max 255)
+
+
+Contraintes :
+- Si liée à une consultation → même docteur + même patient  
+- Date ordonnance >= date consultation  
+- Impossible de supprimer si lignes présentes (mais cascade gérée dans le service)
+
+Relations :
+- 1 ordonnance → 1 à N lignes  
+- 1 médicament peut apparaître dans plusieurs ordonnances
+
+---
+
+## **OrdonnanceLigne**
+
+
+Id (PK)
+OrdonnanceId (FK)
+MedicamentId (FK)
+Dosage (<=50)
+Frequency (<=50)
+Duration (<=30)
+Quantity (>0)
+Instructions (<=255, optionnel)
+
+
+Contraintes :
+- Quantity > 0  
+- Champ obligatoire : Dosage, Frequency, Duration  
+- Pas de ligne strictement dupliquée dans la même ordonnance  
+  (Même médicament + même dosage + durée + fréquence)
+
+---
+
+## **Medicament**
+
+
+Id (PK)
+Name (unique, max 100)
+DosageForm (max 30)
+Strength (max 30)
+AtcCode (max 20)
+
+
+Relation :
+- 1 médicament → plusieurs lignes d’ordonnance
+
+---
+
+# 🧩 Résumé des relations
+
+| Entité A        | Relation | Entité B           |
+|-----------------|----------|--------------------|
+| Specialty       | 1 ─ ∞    | Doctor             |
+| Doctor          | 1 ─ ∞    | Consultation       |
+| Patient         | 1 ─ ∞    | Consultation       |
+| Consultation    | 1 ─ ∞    | Ordonnance         |
+| Ordonnance      | 1 ─ ∞    | OrdonnanceLigne    |
+| Medicament      | 1 ─ ∞    | OrdonnanceLigne    |
+
+---
+
+# 🔗 Contraintes clés 
+
+- **Double-booking interdit** (même médecin ou même patient à même horaire)  
+- **Cohérence consultation / ordonnance** (doctorId & patientId doivent correspondre)  
+- **ConsultationId nullable** pour permettre de détacher une ordonnance  
+- **Patient / Doctor non supprimables** s’ils ont un historique  
+- **Spécialité non supprimable** si des médecins y sont rattachés  
+- **Médicament non supprimable** si utilisé dans des ordonnances  
+- **Unicités** :
+  - Specialty.Name  
+  - Medicament.Name  
+  - Patient (Nom + Prénom + BirthDate)  
+
+---
