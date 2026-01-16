@@ -12,9 +12,6 @@ public class ConsultationRepository
         _context = context;
     }
 
-    // -------------------------
-    // CRUD READ
-    // -------------------------
 
     public async Task<List<Consultation>> GetAllAsync()
     {
@@ -29,9 +26,7 @@ public class ConsultationRepository
         return await _context.Consultations.FindAsync(id);
     }
 
-    // -------------------------
-    // Vérifications docteur/patient
-    // -------------------------
+
 
     public Task<bool> DoctorExistsAsync(int doctorId)
     {
@@ -79,9 +74,7 @@ public class ConsultationRepository
         return await query.AnyAsync(c => c.PatientId == patientId);
     }
 
-    // -------------------------
-    // Suppression (avec ordonnances)
-    // -------------------------
+
 
     public async Task<bool> HasOrdonnancesAsync(int consultationId)
     {
@@ -93,9 +86,7 @@ public class ConsultationRepository
         return await _context.Consultations.FirstOrDefaultAsync(c => c.Id == id);
     }
 
-    // -------------------------
-    // Ordonnances d'une consultation
-    // -------------------------
+
 
     public async Task<List<Ordonnance>> GetOrdonnancesByConsultationAsync(int consultationId)
     {
@@ -133,9 +124,7 @@ public class ConsultationRepository
         return ord;
     }
 
-    // -------------------------
-    // Utilitaire : liste filtrée
-    // -------------------------
+
 
     public async Task<List<Consultation>> GetFilteredAsync(
         int? doctorId,
@@ -163,9 +152,7 @@ public class ConsultationRepository
             .ToListAsync();
     }
 
-    // -------------------------
-    // WRITE
-    // -------------------------
+
 
     public async Task AddAsync(Consultation consultation)
     {

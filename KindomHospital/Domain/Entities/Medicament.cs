@@ -10,6 +10,6 @@ public class Medicament
 
     public string? AtcCode { get; set; }
 
-    // Navigation : 1 Medicament → N OrdonnanceLignes
+
     public ICollection<OrdonnanceLigne> OrdonnanceLignes { get; set; } = new List<OrdonnanceLigne>();
 }

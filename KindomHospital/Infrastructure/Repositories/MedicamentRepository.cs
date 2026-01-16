@@ -12,9 +12,6 @@ public class MedicamentRepository
         _context = context;
     }
 
-    // -------------------------
-    // CRUD READ
-    // -------------------------
 
     public async Task<List<Medicament>> GetAllAsync()
     {
@@ -28,9 +25,6 @@ public class MedicamentRepository
         return await _context.Medicaments.FindAsync(id);
     }
 
-    // -------------------------
-    // Unicité / existence
-    // -------------------------
 
     public Task<bool> ExistsByNameAsync(string name)
     {
@@ -42,9 +36,7 @@ public class MedicamentRepository
         return _context.Medicaments.AnyAsync(m => m.Id == medicamentId);
     }
 
-    // -------------------------
-    // Relationnel : ordonnances d’un médicament
-    // -------------------------
+
 
     public async Task<List<Ordonnance>> GetOrdonnancesByMedicamentAsync(int medicamentId)
     {
@@ -56,9 +48,6 @@ public class MedicamentRepository
             .ToListAsync();
     }
 
-    // -------------------------
-    // WRITE
-    // -------------------------
 
     public async Task AddAsync(Medicament medicament)
     {

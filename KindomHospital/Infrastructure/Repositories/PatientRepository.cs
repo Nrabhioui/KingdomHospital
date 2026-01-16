@@ -12,7 +12,7 @@ public class PatientRepository
         _context = context;
     }
 
-    // ---- READ ----
+    
 
     public async Task<List<Patient>> GetAllAsync()
     {
@@ -69,7 +69,7 @@ public class PatientRepository
             .ToListAsync();
     }
 
-    // ---- WRITE ----
+  
 
     public async Task AddAsync(Patient entity)
     {

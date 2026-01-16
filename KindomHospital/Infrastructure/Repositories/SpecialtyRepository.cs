@@ -12,7 +12,7 @@ public class SpecialtyRepository
         _context = context;
     }
 
-    // ---- READ ----
+
 
     public async Task<List<Specialty>> GetAllAsync()
     {
@@ -23,14 +23,11 @@ public class SpecialtyRepository
 
     public async Task<Specialty?> GetByIdAsync(int id)
     {
-        // FindAsync retourne ValueTask<Specialty?>
+        
         return await _context.Specialties.FindAsync(id);
     }
 
-    /// <summary>
-    /// Vérifie s'il existe déjà une spécialité avec ce nom.
-    /// excludeId permet d'ignorer une spécialité (utile pour Update).
-    /// </summary>
+    
     public async Task<bool> ExistsByNameAsync(string name, int? excludeId = null)
     {
         var query = _context.Specialties.AsQueryable();
@@ -43,16 +40,13 @@ public class SpecialtyRepository
         return await query.AnyAsync(s => s.Name == name);
     }
 
-    /// <summary>
-    /// Vérifie si une spécialité a au moins un médecin.
-    /// Sert pour la règle : "on ne supprime pas une spécialité avec des médecins".
-    /// </summary>
+    
     public Task<bool> HasDoctorsAsync(int specialtyId)
     {
         return _context.Doctors.AnyAsync(d => d.SpecialtyId == specialtyId);
     }
 
-    // ---- WRITE ----
+    
 
     public async Task AddAsync(Specialty specialty)
     {
@@ -66,9 +60,7 @@ public class SpecialtyRepository
         await _context.SaveChangesAsync();
     }
 
-    /// <summary>
-    /// Utilisé quand on a déjà modifié une entité suivie par le contexte.
-    /// </summary>
+    
     public Task SaveChangesAsync()
     {
         return _context.SaveChangesAsync();

@@ -12,7 +12,7 @@ public class Consultation
 
     public string? Reason { get; set; }
 
-    // Navigation properties
+
     public Doctor Doctor { get; set; } = null!;
     public Patient Patient { get; set; } = null!;
     public ICollection<Ordonnance> Ordonnances { get; set; } = new List<Ordonnance>();

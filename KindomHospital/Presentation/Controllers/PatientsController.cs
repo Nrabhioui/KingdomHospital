@@ -48,7 +48,7 @@ public class PatientsController : ControllerBase
         }
         catch (InvalidOperationException ex)
         {
-            // Doublon (même nom + prénom + birthdate)
+            
             return Conflict(ex.Message);
         }
     }
@@ -87,7 +87,7 @@ public class PatientsController : ControllerBase
         }
         catch (InvalidOperationException ex)
         {
-            // Patient avec consultations / ordonnances
+            
             return Conflict(ex.Message);
         }
     }

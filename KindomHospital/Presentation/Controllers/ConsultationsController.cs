@@ -23,14 +23,14 @@ public class ConsultationsController : ControllerBase
         [FromQuery] DateOnly? from,
         [FromQuery] DateOnly? to)
     {
-        // Si aucun filtre → même comportement qu'avant : tout renvoyer
+  
         if (doctorId is null && patientId is null && from is null && to is null)
         {
             var all = await _service.GetAllAsync();
             return Ok(all);
         }
 
-        // Règle du Endpoints utilitaires  : au moins un des deux Id doit être non nul
+        
         if (doctorId is null && patientId is null)
             return BadRequest("Au moins doctorId ou patientId doit être fourni.");
 

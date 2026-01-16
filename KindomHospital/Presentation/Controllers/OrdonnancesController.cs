@@ -18,8 +18,6 @@ public class OrdonnancesController : ControllerBase
         _ligneService = ligneService;
     }
 
-    // CRUD Ordonnance
-
     [HttpGet]
     public async Task<ActionResult<IEnumerable<OrdonnanceDto>>> GetAll(
         [FromQuery] int? doctorId,
@@ -27,14 +25,12 @@ public class OrdonnancesController : ControllerBase
         [FromQuery] DateOnly? from,
         [FromQuery] DateOnly? to)
     {
-        // Aucun filtre → toutes les ordonnances
         if (doctorId is null && patientId is null && from is null && to is null)
         {
             var all = await _ordonnanceService.GetAllAsync();
             return Ok(all);
         }
 
-        // Règle endpoint utilitaire : au moins un des deux Id doit être fourni
         if (doctorId is null && patientId is null)
             return BadRequest("Au moins doctorId ou patientId doit être fourni.");
 
@@ -109,7 +105,6 @@ public class OrdonnancesController : ControllerBase
         }
     }
 
-    // Lignes d’ordonnance (endpoints relationnels section 10) :contentReference[oaicite:8]{index=8}
 
     [HttpGet("{id:int}/lignes")]
     public async Task<ActionResult<IEnumerable<OrdonnanceLigneDto>>> GetLignes(int id)

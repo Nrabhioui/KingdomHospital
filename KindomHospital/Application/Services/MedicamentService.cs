@@ -49,7 +49,7 @@ public class MedicamentService
         if (string.IsNullOrWhiteSpace(strength))
             throw new ArgumentException("Strength is required.", nameof(dto.Strength));
 
-        // contraintes de longueur
+        
         if (name.Length > 100) name = name[..100];
         if (dosageForm.Length > 30) dosageForm = dosageForm[..30];
         if (strength.Length > 30) strength = strength[..30];
@@ -72,9 +72,7 @@ public class MedicamentService
         return _mapper.ToDto(entity);
     }
 
-    // ----------------------------
-    // RELATIONNEL : Medicament - Ordonnances
-    // ----------------------------
+    
 
     public async Task<IEnumerable<OrdonnanceDto>> GetOrdonnancesByMedicamentAsync(int medicamentId)
     {

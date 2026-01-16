@@ -16,9 +16,7 @@ public class OrdonnanceService
         _mapper = mapper;
     }
 
-    // ----------------------------
-    // CRUD
-    // ----------------------------
+   
 
     public async Task<IEnumerable<OrdonnanceDto>> GetAllAsync()
     {
@@ -120,7 +118,7 @@ public class OrdonnanceService
             return false;
 
         if (entity.Lignes.Any())
-            _repository.RemoveAsync(entity); // Lignes sont supprimées via config cascade
+            _repository.RemoveAsync(entity); 
 
         await _repository.RemoveAsync(entity);
         return true;
@@ -137,9 +135,7 @@ public class OrdonnanceService
             throw new InvalidOperationException("Patient does not exist.");
     }
 
-    // ----------------------------
-    // RELATIONNEL : Consultation - Ordonnance
-    // ----------------------------
+    
 
     public async Task<bool> SetOrdonnanceConsultationAsync(int ordonnanceId, int consultationId)
     {
@@ -171,9 +167,7 @@ public class OrdonnanceService
         return true;
     }
 
-    // ----------------------------
-    // UTILITAIRE : Filtre doctor/patient/date
-    // ----------------------------
+   
 
     public async Task<IEnumerable<OrdonnanceDto>> GetFilteredAsync(
         int? doctorId,

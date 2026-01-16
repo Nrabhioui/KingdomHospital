@@ -30,9 +30,7 @@ public class DoctorService
         _ordonnanceMapper = ordonnanceMapper;
     }
 
-    // ----------------------------
-    // CRUD
-    // ----------------------------
+
 
     public async Task<IEnumerable<DoctorDto>> GetAllAsync()
     {
@@ -100,7 +98,7 @@ public class DoctorService
         await _repository.SaveChangesAsync();
         return true;
     }
-    //Pas demandé mais logique a mon avis
+
     public async Task<bool> DeleteAsync(int id)
     {
         var entity = await _repository.GetByIdAsync(id);
@@ -117,9 +115,6 @@ public class DoctorService
         return true;
     }
 
-    // ----------------------------
-    // RELATIONNEL : Specialty ↔ Doctor
-    // ----------------------------
 
     public async Task<IEnumerable<DoctorDto>> GetBySpecialtyAsync(int specialtyId)
     {
@@ -148,9 +143,7 @@ public class DoctorService
         return true;
     }
 
-    // ----------------------------
-    // RELATIONNEL : Doctor ↔ Consultations
-    // ----------------------------
+
 
     public async Task<IEnumerable<ConsultationDto>> GetConsultationsByDoctorAsync(
         int doctorId,

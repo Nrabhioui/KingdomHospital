@@ -21,9 +21,7 @@ public class ConsultationService
         _ordonnanceMapper = ordonnanceMapper;
     }
 
-    // ----------------------------
-    // CRUD
-    // ----------------------------
+
 
     public async Task<IEnumerable<ConsultationDto>> GetAllAsync()
     {
@@ -120,9 +118,7 @@ public class ConsultationService
             throw new InvalidOperationException("The patient already has a consultation at this date and time.");
     }
 
-    // ----------------------------
-    // RELATIONNEL : Consultation - Ordonnance
-    // ----------------------------
+
 
     public async Task<IEnumerable<OrdonnanceDto>> GetOrdonnancesByConsultationAsync(int consultationId)
     {
@@ -142,9 +138,7 @@ public class ConsultationService
         return _ordonnanceMapper.ToDto(entity);
     }
 
-    // ----------------------------
-    // RELATIONNEL : utilitaire (filtre)
-    // ----------------------------
+
 
     public async Task<IEnumerable<ConsultationDto>> GetFilteredAsync(
         int? doctorId,

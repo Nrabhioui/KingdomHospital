@@ -37,7 +37,7 @@ public class SpecialtyService
         if (exists)
             throw new InvalidOperationException("A specialty with the same name already exists.");
 
-        // On recrée un DTO "propre" (Name déjà trimé)
+        
         var entity = _mapper.ToEntity(new SpecialtyCreateDto(name));
 
         await _repository.AddAsync(entity);
@@ -59,7 +59,7 @@ public class SpecialtyService
         if (exists)
             throw new InvalidOperationException("A specialty with the same name already exists.");
 
-        // On met à jour l'entité suivie par le contexte
+       
         _mapper.UpdateEntity(new SpecialtyUpdateDto(name), entity);
 
         await _repository.SaveChangesAsync();
@@ -72,7 +72,7 @@ public class SpecialtyService
         if (entity is null)
             return false;
 
-        // Règle métier de la checklist : pas supprimer si médecins associés 
+        
         var hasDoctors = await _repository.HasDoctorsAsync(id);
         if (hasDoctors)
             throw new InvalidOperationException("Cannot delete a specialty with doctors.");

@@ -25,9 +25,6 @@ public class PatientService
         _ordonnanceMapper = ordonnanceMapper;
     }
 
-    // -------------------------
-    // CRUD
-    // -------------------------
 
     public async Task<IEnumerable<PatientDto>> GetAllAsync()
     {
@@ -116,9 +113,7 @@ public class PatientService
         return birthDate >= min && birthDate <= today;
     }
 
-    // -------------------------
-    // RELATIONNEL
-    // -------------------------
+
 
     public async Task<IEnumerable<ConsultationDto>> GetConsultationsByPatientAsync(int patientId)
     {

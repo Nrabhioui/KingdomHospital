@@ -12,9 +12,6 @@ public class DoctorRepository
         _context = context;
     }
 
-    // ------------------------
-    // CRUD READ
-    // ------------------------
 
     public async Task<List<Doctor>> GetAllAsync()
     {
@@ -57,9 +54,7 @@ public class DoctorRepository
         return _context.Ordonnances.AnyAsync(o => o.DoctorId == doctorId);
     }
 
-    // ------------------------
-    // RELATIONNEL
-    // ------------------------
+
 
     public async Task<List<Doctor>> GetBySpecialtyAsync(int specialtyId)
     {
@@ -135,9 +130,7 @@ public class DoctorRepository
             .ToListAsync();
     }
 
-    // ------------------------
-    // WRITE
-    // ------------------------
+
 
     public async Task AddAsync(Doctor doctor)
     {

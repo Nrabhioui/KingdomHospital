@@ -11,5 +11,5 @@ public partial class MedicamentMapper
 
     public partial Medicament ToEntity(MedicamentCreateDto dto);
 
-    public partial void UpdateEntity(MedicamentUpdateDto dto, Medicament entity); //Facultatif
+    public partial void UpdateEntity(MedicamentUpdateDto dto, Medicament entity); 
 }

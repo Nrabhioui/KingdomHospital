@@ -50,7 +50,7 @@ public class DoctorsController : ControllerBase
         }
         catch (InvalidOperationException ex)
         {
-            // Specialty inexistante ou doublon , expliquer car pas dans le cours
+          
             return Conflict(ex.Message);
         }
     }
@@ -89,7 +89,7 @@ public class DoctorsController : ControllerBase
         }
         catch (InvalidOperationException ex)
         {
-            // Médecin avec consultations/ordonnances
+            
             return Conflict(ex.Message);
         }
     }
@@ -139,7 +139,6 @@ public class DoctorsController : ControllerBase
         }
     }
 
-    //Consultations d'un docteur
     [HttpGet("{doctorId:int}/consultations")]
     public async Task<ActionResult<IEnumerable<ConsultationDto>>> GetConsultationsByDoctor(
     int doctorId,
@@ -158,7 +157,6 @@ public class DoctorsController : ControllerBase
         }
     }
 
-    //Patients d'un docteur
     [HttpGet("{doctorId:int}/patients")]
     public async Task<ActionResult<IEnumerable<PatientDto>>> GetPatientsByDoctor(int doctorId)
     {
@@ -173,7 +171,6 @@ public class DoctorsController : ControllerBase
         }
     }
 
-    //Ordonnances d'un docteur
     [HttpGet("{doctorId:int}/ordonnances")]
     public async Task<ActionResult<IEnumerable<OrdonnanceDto>>> GetOrdonnancesByDoctor(
     int doctorId,

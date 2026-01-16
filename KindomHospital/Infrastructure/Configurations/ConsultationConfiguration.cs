@@ -21,12 +21,12 @@ public class ConsultationConfiguration : IEntityTypeConfiguration<Consultation>
         builder.HasOne(c => c.Doctor)
             .WithMany(d => d.Consultations)
             .HasForeignKey(c => c.DoctorId)
-            .OnDelete(DeleteBehavior.Restrict);   // ⬅ IMPORTANT Introducing FOREIGN KEY constraint 'FK_Ordonnances_Doctors_DoctorId' on table 'Ordonnances' may cause cycles or multiple cascade paths. Specify ON DELETE NO ACTION or ON UPDATE NO ACTION, or modify other FOREIGN KEY constraints.  Could not create constraint or index. See previous errors.
+            .OnDelete(DeleteBehavior.Restrict);   
 
                 builder.HasOne(c => c.Patient)
             .WithMany(p => p.Consultations)
             .HasForeignKey(c => c.PatientId)
-            .OnDelete(DeleteBehavior.Restrict);   // ⬅ IMPORTANT
+            .OnDelete(DeleteBehavior.Restrict);  
 
         builder.HasIndex(c => new { c.DoctorId, c.Date, c.Hour })
             .IsUnique();

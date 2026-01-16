@@ -12,9 +12,7 @@ public class OrdonnanceRepository
         _context = context;
     }
 
-    // -------------------------
-    // CRUD READ
-    // -------------------------
+    
 
     public async Task<List<Ordonnance>> GetAllAsync()
     {
@@ -29,9 +27,7 @@ public class OrdonnanceRepository
         return await _context.Ordonnances.FindAsync(id);
     }
 
-    // -------------------------
-    // Doctor / Patient existence
-    // -------------------------
+    
 
     public Task<bool> DoctorExistsAsync(int doctorId)
     {
@@ -43,9 +39,7 @@ public class OrdonnanceRepository
         return _context.Patients.AnyAsync(p => p.Id == patientId);
     }
 
-    // -------------------------
-    // Consultation check
-    // -------------------------
+ 
 
     public async Task<Consultation?> GetConsultationAsync(int consultationId)
     {
@@ -61,9 +55,7 @@ public class OrdonnanceRepository
             .FirstOrDefaultAsync(c => c.Id == consultationId);
     }
 
-    // -------------------------
-    // DELETE
-    // -------------------------
+
 
     public async Task<Ordonnance?> GetWithLignesAsync(int id)
     {
@@ -72,9 +64,7 @@ public class OrdonnanceRepository
             .FirstOrDefaultAsync(o => o.Id == id);
     }
 
-    // -------------------------
-    // UPDATE consultationId
-    // -------------------------
+
 
     public async Task<Ordonnance?> GetForConsultationUpdateAsync(int ordonnanceId)
     {
@@ -82,9 +72,7 @@ public class OrdonnanceRepository
             .FirstOrDefaultAsync(o => o.Id == ordonnanceId);
     }
 
-    // -------------------------
-    // UTILITAIRE filtre
-    // -------------------------
+
 
     public async Task<List<Ordonnance>> GetFilteredAsync(
         int? doctorId,
@@ -112,9 +100,7 @@ public class OrdonnanceRepository
             .ToListAsync();
     }
 
-    // -------------------------
-    // WRITE
-    // -------------------------
+
 
     public async Task AddAsync(Ordonnance ordonnance)
     {

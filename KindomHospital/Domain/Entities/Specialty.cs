@@ -6,6 +6,6 @@ public class Specialty
 
     public string Name { get; set; } = default!;
 
-    // 1 Specialty → N Doctors
+   
     public ICollection<Doctor> Doctors { get; set; } = new List<Doctor>();
 }
